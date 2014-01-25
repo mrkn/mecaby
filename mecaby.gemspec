@@ -8,9 +8,9 @@ Gem::Specification.new do |spec|
   spec.version       = Mecaby::VERSION
   spec.authors       = ["Kenta Murata"]
   spec.email         = ["mrkn@cookpad.com"]
-  spec.summary       = %q{TODO: Write a short summary. Required.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
-  spec.homepage      = ""
+  spec.summary       = %q{Mecaby: MeCab wrapper library for Ruby.}
+  spec.description   = %q{Mecaby is an Ruby extension library to use MeCab.}
+  spec.homepage      = "https://github.com/mrkn/mecaby"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
