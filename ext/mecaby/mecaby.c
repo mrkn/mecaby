@@ -1231,7 +1231,17 @@ DEFINE_NODE_STATUS_PREDICATOR(nor, NOR);
 DEFINE_NODE_STATUS_PREDICATOR(unk, UNK);
 DEFINE_NODE_STATUS_PREDICATOR(bos, BOS);
 DEFINE_NODE_STATUS_PREDICATOR(eos, EOS);
+#ifdef MECAB_EON_NODE
 DEFINE_NODE_STATUS_PREDICATOR(eon, EON);
+#else
+static VALUE
+mecaby_node_status_is_eon(VALUE self)
+{
+  mecaby_node_t* node = check_get_node_initialized(self, rb_eRuntimeError);
+
+  return Qfalse;
+}
+#endif
 
 #undef DEFINE_NODE_STATUS_PREDICATOR
 
