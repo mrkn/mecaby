@@ -12,5 +12,6 @@ install:
   # mecab
   - curl -O http://mecab.googlecode.com/files/mecab-${mecab_version}.tar.gz && tar xf mecab-${mecab_version}.tar.gz
   - pushd mecab-${mecab_version} && ./configure && make && sudo make install && popd
+  - sudo ldconfig
   # bundler
   - bundle install
