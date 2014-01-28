@@ -104,6 +104,7 @@ typedef struct mecaby_path {
 
 static VALUE mecaby_mMecaby;
 static VALUE mecaby_eError;
+static VALUE mecaby_eDictNotFound;
 static VALUE mecaby_eRuntimeError;
 #ifdef HAVE_MECAB_MODEL_NEW
 static VALUE mecaby_cModel;
@@ -877,7 +878,13 @@ mecaby_tagger_initialize(int argc, VALUE* argv, VALUE self)
   }
 
   if (tagger->tagger == NULL) {
-    rb_raise(rb_eRuntimeError, "%s:%d: mecab_tagger_initialize: %s", __FILE__, __LINE__, mecab_strerror(NULL));
+    char const* error = mecab_strerror(NULL);
+    if (strstr(error, "load_dictionary_resource")) {
+      rb_raise(mecaby_eDictNotFound, "%s:%d: mecab_tagger_initialize: %s", __FILE__, __LINE__, mecab_strerror(NULL));
+    }
+    else {
+      rb_raise(rb_eRuntimeError, "%s:%d: mecab_tagger_initialize: %s", __FILE__, __LINE__, mecab_strerror(NULL));
+    }
   }
 
   if (!NIL_P(tagger->generator)
@@ -1237,6 +1244,7 @@ Init_mecaby(void)
   rb_define_const(mecaby_mMecaby, "MECAB_VERSION", rb_str_new2(mecab_version()));
 
   mecaby_eError = rb_define_class_under(mecaby_mMecaby, "Error", rb_eStandardError);
+  mecaby_eDictNotFound = rb_define_class_under(mecaby_mMecaby, "DictionaryNotFound", mecaby_eError);
 
 #ifdef HAVE_MECAB_MODEL_NEW
   mecaby_cModel = rb_define_class_under(mecaby_mMecaby, "Model", rb_cData);
