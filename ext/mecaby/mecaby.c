@@ -147,13 +147,13 @@ mecaby_init_pointer_object_map()
 static VALUE
 weakref_new(VALUE obj)
 {
-  return rb_funcallv(cWeakRef, rb_intern("new"), 1, &obj);
+  return rb_funcall(cWeakRef, rb_intern("new"), 1, obj);
 }
 
 static VALUE
 weakref_getobj(VALUE wref)
 {
-  return rb_funcallv(wref, rb_intern("__getobj__"), 0, NULL);
+  return rb_funcall(wref, rb_intern("__getobj__"), 0);
 }
 
 static VALUE
@@ -258,7 +258,7 @@ mecaby_decode_charset_to_encoding(char const* charset)
 {
   VALUE vcharset = rb_external_str_new_with_enc(charset, strlen(charset), rb_usascii_encoding());
 
-  rb_funcallv(vcharset, rb_intern("downcase!"), 0, NULL);
+  rb_funcall(vcharset, rb_intern("downcase!"), 0);
 
   if (charset_is_shift_jis(RSTRING_PTR(vcharset))) {
     return rb_enc_find("Windows-31J");
@@ -736,7 +736,7 @@ mecaby_model_create_tagger(VALUE self)
   VALUE obj;
 
   obj = rb_obj_alloc(mecaby_cTagger);
-  rb_funcallv(obj, rb_intern("initialize"), 1, &self);
+  rb_funcall(obj, rb_intern("initialize"), 1, self);
 
   return obj;
 }
@@ -747,7 +747,7 @@ mecaby_model_create_lattice(VALUE self)
   VALUE obj;
 
   obj = rb_obj_alloc(mecaby_cLattice);
-  rb_funcallv(obj, rb_intern("initialize"), 1, &self);
+  rb_funcall(obj, rb_intern("initialize"), 1, self);
 
   return obj;
 }
