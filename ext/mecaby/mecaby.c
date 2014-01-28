@@ -1073,6 +1073,18 @@ decode_charset(char const* charset)
 static VALUE
 mecaby_dictionary_info_charset(VALUE self)
 {
+  char const* charset;
+  mecaby_dictionary_info_t* di = check_get_dictionary_info_initialized(self, rb_eRuntimeError);
+
+  charset = di->dictionary_info->charset;
+  if (charset == NULL) return Qnil;
+
+  return rb_external_str_new_with_enc(charset, strlen(charset), rb_usascii_encoding());
+}
+
+static VALUE
+mecaby_dictionary_info_encoding(VALUE self)
+{
   rb_encoding* encoding;
   mecaby_dictionary_info_t* di = check_get_dictionary_info_initialized(self, rb_eRuntimeError);
 
@@ -1265,6 +1277,7 @@ Init_mecaby(void)
   rb_define_method(mecaby_cDictionaryInfo, "next", mecaby_dictionary_info_next, 0);
   rb_define_method(mecaby_cDictionaryInfo, "filename", mecaby_dictionary_info_filename, 0);
   rb_define_method(mecaby_cDictionaryInfo, "charset", mecaby_dictionary_info_charset, 0);
+  rb_define_method(mecaby_cDictionaryInfo, "encoding", mecaby_dictionary_info_encoding, 0);
   rb_define_method(mecaby_cDictionaryInfo, "size", mecaby_dictionary_info_size, 0);
   rb_define_method(mecaby_cDictionaryInfo, "type", mecaby_dictionary_info_type, 0);
   rb_define_method(mecaby_cDictionaryInfo, "lsize", mecaby_dictionary_info_lsize, 0);
