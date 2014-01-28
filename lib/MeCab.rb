@@ -24,5 +24,7 @@ module MeCab
     def_delegator :@tagger, :nbest_parse, :parseNBest
 
     def_delegator :@tagger, :nbest_init, :parseNBestInit
+
+    def_delegator :@tagger, :parse_to_node, :parseToNode
   end
 end

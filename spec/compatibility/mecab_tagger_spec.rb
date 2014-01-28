@@ -60,5 +60,30 @@ module MeCab
         end
       end
     end
+
+    describe '#parseToNode' do
+      context 'When the tagger is initialized with "-l 1"' do
+        let(:options) { '-l 1' }
+
+        context 'When the subject method is called with "寿司が食べたい"' do
+          let(:input) { "寿司が食べたい" }
+          subject(:result) { tagger.parseToNode(input) }
+
+          describe 'collection of each non-empty node.surface' do
+            subject(:surfaces) do
+              [].tap do |ary|
+                node = result
+                while node
+                  ary << node.surface if node.surface && !node.surface.empty?
+                  node = node.next
+                end
+              end
+            end
+
+            it { should eq(%w[寿司 が 食べ たい]) }
+          end
+        end
+      end
+    end
   end
 end
