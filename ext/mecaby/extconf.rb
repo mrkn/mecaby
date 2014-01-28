@@ -7,4 +7,4 @@ end
 
 have_func('mecab_model_new', %[mecab.h])
 
-create_makefile('mecaby')
+create_makefile('mecaby/mecaby')
