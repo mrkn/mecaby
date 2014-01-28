@@ -1,6 +1,7 @@
 *~
 *.gem
 *.rbc
+mkmf.log
 .bundle
 .config
 .yardoc
@@ -13,6 +14,8 @@ lib/bundler/man
 pkg
 rdoc
 spec/reports
+spec/dict/*
+!spec/dict/mecab-naist-jdic-0.6.3b-20111013.tar.gz
 test/tmp
 test/version_tmp
 tmp
