@@ -1,6 +1,10 @@
 # Mecaby
 
-TODO: Write a gem description
+Mecaby is yet another extension library of mecab for Ruby.
+
+- Written in pure C.
+- Support encoding system of Ruby.
+- Including compatible library for mecab-ruby.
 
 ## Installation
 
