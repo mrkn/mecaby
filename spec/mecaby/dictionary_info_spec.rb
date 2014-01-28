@@ -3,7 +3,7 @@ require 'spec_helper'
 module Mecaby
   describe DictionaryInfo do
     context 'with a dictionary encoded in UTF-8' do
-      let(:tagger) { Tagger.new("-d #{spec_dir.join('dict/utf-8')}") }
+      let(:tagger) { Tagger.new("-d #{dict_dir.join('utf-8')}") }
       subject(:dictionary_info) { tagger.dictionary_info }
 
       describe '#encoding' do
@@ -14,7 +14,7 @@ module Mecaby
     end
 
     context 'with a dictionary encoded in Windows-31J' do
-      let(:tagger) { Tagger.new("-d #{spec_dir.join('dict/sjis')}") }
+      let(:tagger) { Tagger.new("-d #{dict_dir.join('sjis')}") }
       subject(:dictionary_info) { tagger.dictionary_info }
 
       describe '#encoding' do
@@ -25,7 +25,7 @@ module Mecaby
     end
 
     context 'with a dictionary encoded in EUC-JP' do
-      let(:tagger) { Tagger.new("-d #{spec_dir.join('dict/euc-jp')}") }
+      let(:tagger) { Tagger.new("-d #{dict_dir.join('euc-jp')}") }
       subject(:dictionary_info) { tagger.dictionary_info }
 
       describe '#encoding' do

@@ -21,3 +21,7 @@ end
 def spec_dir
   @spec_dir ||= Pathname(__FILE__).join('..')
 end
+
+def dict_dir
+  @dict_dir ||= spec_dir.join('dict')
+end
