@@ -172,6 +172,103 @@ mecaby_unregister_pointer(void const* ptr)
 }
 
 /*
+ * the following charset decoding routines are same as MeCab::decode_charset.
+ */
+
+static inline int
+charset_is_shift_jis(char const* charset)
+{
+  return strcmp("sjis",      charset) == 0
+      || strcmp("shift-jis", charset) == 0
+      || strcmp("shift_jis", charset) == 0
+      || strcmp("cp932",     charset) == 0
+      ;
+}
+
+static inline int
+charset_is_euc_jp(char const* charset)
+{
+  return strcmp("euc",    charset) == 0
+      || strcmp("euc_jp", charset) == 0
+      || strcmp("euc-jp", charset) == 0
+      ;
+}
+
+static inline int
+charset_is_utf8(char const* charset)
+{
+  return strcmp("utf8",  charset) == 0
+      || strcmp("utf_8", charset) == 0
+      || strcmp("utf-8", charset) == 0
+      ;
+}
+
+static inline int
+charset_is_utf16(char const* charset)
+{
+  return strcmp("utf16",  charset) == 0
+      || strcmp("utf_16", charset) == 0
+      || strcmp("utf-16", charset) == 0
+      ;
+}
+
+static inline int
+charset_is_utf16be(char const* charset)
+{
+  return strcmp("utf16be",  charset) == 0
+      || strcmp("utf_16be", charset) == 0
+      || strcmp("utf-16be", charset) == 0
+      ;
+}
+
+static inline int
+charset_is_utf16le(char const* charset)
+{
+  return strcmp("utf16le",  charset) == 0
+      || strcmp("utf_16le", charset) == 0
+      || strcmp("utf-16le", charset) == 0
+      ;
+}
+
+static inline int
+charset_is_ascii(char const* charset)
+{
+  return strcmp("ascii", charset) == 0;
+}
+
+static rb_encoding*
+mecaby_decode_charset_to_encoding(char const* charset)
+{
+  VALUE vcharset = rb_external_str_new_with_enc(charset, strlen(charset), rb_usascii_encoding());
+
+  rb_funcallv(vcharset, rb_intern("downcase!"), 0, NULL);
+
+  if (charset_is_shift_jis(RSTRING_PTR(vcharset))) {
+    return rb_enc_find("Windows-31J");
+  }
+  else if (charset_is_euc_jp(RSTRING_PTR(vcharset))) {
+    return rb_enc_find("EUC-JP");
+  }
+  else if (charset_is_utf8(RSTRING_PTR(vcharset))) {
+    return rb_utf8_encoding();
+  }
+  else if (charset_is_utf16(RSTRING_PTR(vcharset))) {
+    return rb_enc_find("UTF-16");
+  }
+  else if (charset_is_utf16be(RSTRING_PTR(vcharset))) {
+    return rb_enc_find("UTF-16BE");
+  }
+  else if (charset_is_utf16le(RSTRING_PTR(vcharset))) {
+    return rb_enc_find("UTF-16LE");
+  }
+  else if (charset_is_ascii(RSTRING_PTR(vcharset))) {
+    return rb_usascii_encoding();
+  }
+
+  return rb_utf8_encoding(); /* default is UTF-8 */
+}
+
+/*
  * Typed data preparations
  */
 
@@ -975,101 +1072,6 @@ mecaby_dictionary_info_filename(VALUE self)
   return rb_filesystem_str_new_cstr(di->dictionary_info->filename);
 }
 
-/* the following charset decoding routines are same as MeCab::decode_charset. */
-
-static inline int
-charset_is_shift_jis(char const* charset)
-{
-  return strcmp("sjis",      charset) == 0
-      || strcmp("shift-jis", charset) == 0
-      || strcmp("shift_jis", charset) == 0
-      || strcmp("cp932",     charset) == 0
-      ;
-}
-
-static inline int
-charset_is_euc_jp(char const* charset)
-{
-  return strcmp("euc",    charset) == 0
-      || strcmp("euc_jp", charset) == 0
-      || strcmp("euc-jp", charset) == 0
-      ;
-}
-
-static inline int
-charset_is_utf8(char const* charset)
-{
-  return strcmp("utf8",  charset) == 0
-      || strcmp("utf_8", charset) == 0
-      || strcmp("utf-8", charset) == 0
-      ;
-}
-
-static inline int
-charset_is_utf16(char const* charset)
-{
-  return strcmp("utf16",  charset) == 0
-      || strcmp("utf_16", charset) == 0
-      || strcmp("utf-16", charset) == 0
-      ;
-}
-
-static inline int
-charset_is_utf16be(char const* charset)
-{
-  return strcmp("utf16be",  charset) == 0
-      || strcmp("utf_16be", charset) == 0
-      || strcmp("utf-16be", charset) == 0
-      ;
-}
-
-static inline int
-charset_is_utf16le(char const* charset)
-{
-  return strcmp("utf16le",  charset) == 0
-      || strcmp("utf_16le", charset) == 0
-      || strcmp("utf-16le", charset) == 0
-      ;
-}
-
-static inline int
-charset_is_ascii(char const* charset)
-{
-  return strcmp("ascii", charset) == 0;
-}
-
-static rb_encoding*
-decode_charset(char const* charset)
-{
-  VALUE vcharset = rb_external_str_new_with_enc(charset, strlen(charset), rb_usascii_encoding());
-
-  rb_funcallv(vcharset, rb_intern("downcase!"), 0, NULL);
-
-  if (charset_is_shift_jis(RSTRING_PTR(vcharset))) {
-    return rb_enc_find("Windows-31J");
-  }
-  else if (charset_is_euc_jp(RSTRING_PTR(vcharset))) {
-    return rb_enc_find("EUC-JP");
-  }
-  else if (charset_is_utf8(RSTRING_PTR(vcharset))) {
-    return rb_utf8_encoding();
-  }
-  else if (charset_is_utf16(RSTRING_PTR(vcharset))) {
-    return rb_enc_find("UTF-16");
-  }
-  else if (charset_is_utf16be(RSTRING_PTR(vcharset))) {
-    return rb_enc_find("UTF-16BE");
-  }
-  else if (charset_is_utf16le(RSTRING_PTR(vcharset))) {
-    return rb_enc_find("UTF-16LE");
-  }
-  else if (charset_is_ascii(RSTRING_PTR(vcharset))) {
-    return rb_usascii_encoding();
-  }
-
-  return rb_utf8_encoding(); /* default is UTF-8 */
-}
-
 static VALUE
 mecaby_dictionary_info_charset(VALUE self)
 {
@@ -1090,7 +1092,7 @@ mecaby_dictionary_info_encoding(VALUE self)
 
   if (di->dictionary_info->charset == NULL) return Qnil;
 
-  encoding = decode_charset(di->dictionary_info->charset);
+  encoding = mecaby_decode_charset_to_encoding(di->dictionary_info->charset);
   return rb_enc_from_encoding(encoding);
 }
 
