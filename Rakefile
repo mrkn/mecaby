@@ -1,5 +1,6 @@
 require "bundler/gem_tasks"
 require "rake/extensiontask"
+require "rspec/core/rake_task"
 
 DICT_SOURCE = 'mecab-naist-jdic-0.6.3b-20111013.tar.gz'
 
@@ -7,9 +8,14 @@ def spec_dir
   Pathname(__FILE__).join('..', 'spec')
 end
 
+task :default => :spec
+task :spec => [ :compile, 'spec:setup' ]
+
 Rake::ExtensionTask.new 'mecaby' do |ext|
   ext.lib_dir = 'lib/mecaby'
 end
+
+RSpec::Core::RakeTask.new(:spec)
 
 namespace :spec do
   namespace :dictionary do
