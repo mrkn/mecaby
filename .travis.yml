@@ -8,8 +8,6 @@ env:
   - "mecab_version=0.996"
   - "mecab_version=0.98"
   - "mecab_version=0.96"
-before_install:
-  - gem install rspec --pre --version 3.0.0.beta1
 install:
   # mecab
   - curl -O http://mecab.googlecode.com/files/mecab-${mecab_version}.tar.gz && tar xf mecab-${mecab_version}.tar.gz
