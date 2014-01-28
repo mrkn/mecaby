@@ -131,36 +131,52 @@ static VALUE mecaby_cPath;
 # error ---->> assume sizeof(void*) == sizeof(long) or sizeof(LONG_LONG) to be compiled. <<----
 #endif
 
+static VALUE cWeakRef = Qnil;
 static VALUE mecaby_pointer_object_map = Qnil;
 
 static void
 mecaby_init_pointer_object_map()
 {
+  rb_require("weakref");
+
+  cWeakRef = rb_path2class("WeakRef");
   mecaby_pointer_object_map = rb_hash_new();
   rb_gc_register_address(&mecaby_pointer_object_map);
 }
 
 static VALUE
+weakref_new(VALUE obj)
+{
+  return rb_funcallv(cWeakRef, rb_intern("new"), 1, &obj);
+}
+
+static VALUE
+weakref_getobj(VALUE wref)
+{
+  return rb_funcallv(wref, rb_intern("__getobj__"), 0, NULL);
+}
+
+static VALUE
 mecaby_lookup_object(void const* ptr)
 {
-  VALUE key, val;
+  VALUE key, wref;
   
   if (ptr == NULL) return Qnil;
 
   key = POINTER_TO_NUM(ptr);
-  val = rb_hash_aref(mecaby_pointer_object_map, key);
+  wref = rb_hash_aref(mecaby_pointer_object_map, key);
 
-  return NIL_P(val) ? Qnil : NUM_TO_VALUE(val);
+  return NIL_P(wref) ? Qnil : weakref_getobj(wref);
 }
 
 static void
 mecaby_register_pointer_object(void const* ptr, VALUE obj)
 {
-  VALUE key, val;
+  VALUE key, wref;
 
   key = POINTER_TO_NUM(ptr);
-  val = VALUE_TO_NUM(obj);
-  rb_hash_aset(mecaby_pointer_object_map, key, val);
+  wref = weakref_new(obj);
+  rb_hash_aset(mecaby_pointer_object_map, key, wref);
 }
 
 static void
