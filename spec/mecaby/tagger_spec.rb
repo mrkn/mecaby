@@ -46,5 +46,32 @@ module Mecaby
         end
       end
     end
+
+    describe '#nbest_parse' do
+      context 'When the tagger is created without -l option' do
+        context 'the subject method is called with 3 and "太郎と花子"' do
+          let(:input) { "太郎と花子" }
+          subject { tagger.nbest_parse(3, input) }
+
+          it 'raises Mecaby::Error' do
+            expect { subject }.to raise_error(Mecaby::Error)
+          end
+        end
+      end
+
+      context 'When the tagger is created with "-l 1"' do
+        let(:additional_args) { [ '-l', '1' ] }
+
+        context 'the subject method is called with 3 and "太郎と花子"' do
+          let(:input) { "太郎と花子" }
+          subject { tagger.nbest_parse(3, input) }
+
+          it 'includes three results' do
+            expect(subject.lines.select {|l| l == "EOS\n" }.count).to eq(3)
+          end
+        end
+      end
+
+    end
   end
 end
