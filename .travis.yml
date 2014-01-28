@@ -4,7 +4,13 @@ rvm:
   - 2.1.0
   - 2.0.0
   - 1.9.3
+env:
+  - "mecab_version=0.996"
+  - "mecab_version=0.98"
+  - "mecab_version=0.96"
+before_install:
+  - gem install rspec --pre --version 3.0.0.beta1
 install:
   # mecab
-  - curl -O http://mecab.googlecode.com/files/mecab-0.996.tar.gz && tar xf mecab-0.996.tar.gz
-  - pushd mecab-0.996 && ./configure && make && sudo make install && popd
+  - curl -O http://mecab.googlecode.com/files/mecab-${mecab_version}.tar.gz && tar xf mecab-${mecab_version}.tar.gz
+  - pushd mecab-${mecab_version} && ./configure && make && sudo make install && popd
