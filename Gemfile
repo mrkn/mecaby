@@ -4,6 +4,6 @@ source 'https://rubygems.org'
 gemspec
 
 group :development, :test do
-  gem 'rspec', '~> 3.0.0.beta1'
+  gem 'rspec', '~> 2.14.0'
   gem 'fuubar'
 end
